@@ -27,6 +27,9 @@ export default {
           password: password.value,
         }
         localStorage.removeItem("accessToken");
+        localStorage.removeItem("accessTokenDeadLine");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("refreshTokenDeadLine");
         const loggingData = await serviceApi.post(uiUserLogging,patMap)
         if(loggingData.status === 200){
           store.commit(`auth/${SET_AUTHENTICATION}`, true);

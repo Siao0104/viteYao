@@ -27,7 +27,12 @@ serviceApi.interceptors.response.use(
         return res
     },error => {
         console.log("攔截器回傳失敗response : ",error)
-        showMessage(error.response.data,"error");
+        if(error.response.status === 403){
+            showMessage("查無此帳號相關權限，請重新確認帳密!!","error");
+        }
+        if(error.response.status === 400){
+            showMessage(error.response.data,"error");
+        }
         return Promise.reject(error)
 })
 
