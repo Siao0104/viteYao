@@ -1,86 +1,132 @@
-<script>
+<script setup lang="ts">
 import serviceApi from "../../request/request.js";
-import {onMounted,ref} from "vue";
+import { onMounted,ref, reactive} from "vue";
 import { useRouter } from "vue-router";
-import {uiGetDtlCodeDesc, uiRegisterUser} from "../../api/api.js";
-import {countryStr} from "../constant/constant.js";
+import { uiGetAllUser, uiGetDtlCodeDesc, uiRegisterUser} from "../../api/api.js";
+import { countryStr} from "../constant/constant.js";
 import showMessage from "../message/message.js";
+import type { FormInstance, FormRules } from "element-plus";
 
-export default {
-  name: "register",
-  setup() {
-    const account = ref(undefined);
-    const password = ref(undefined);
-    const confirmPassword = ref(undefined);
-    const userName = ref(undefined);
-    const birthday = ref(undefined);
-    const sex = ref("M");
-    const country = ref(undefined);
-
-    let codeDtlOptions = ref([]);
-
-    const router = useRouter();
-
-    onMounted(async () => {
-      const resCodeDtl = await serviceApi.get(`${uiGetDtlCodeDesc}${countryStr}`)
-      codeDtlOptions.value = resCodeDtl.data;
-    })
-
-    const register = async () => {
-      let patMap = {
-        account: account.value,
-        password: password.value,
-        confirmPassword: confirmPassword.value,
-        userName: userName.value,
-        birthday: birthday.value,
-        sex: sex.value,
-        country: country.value,
-      }
-      const registerData = await serviceApi.post(uiRegisterUser,patMap)
-      if(registerData.status === 200){
-        showMessage(registerData.data,"success")
-        goBack();
-      }
-    };
-
-    const goBack = () => {
-      router.push("/");
-    };
-
-    return {
-      account,
-      password,
-      confirmPassword,
-      userName,
-      birthday,
-      sex,
-      country,
-      codeDtlOptions,
-      register,
-      goBack,
-    }
-  },
+interface RuleForm {
+  account: string,
+  password: string,
+  confirmPassword: string,
+  userName: string,
+  birthday: string,
+  sex: string,
+  country: string,
 }
+
+let codeDtlOptions = ref([]);
+const router = useRouter();
+const ruleFormRef = ref<FormInstance>()
+
+const ruleForm = reactive<RuleForm>({
+  account: '',
+  password: '',
+  confirmPassword: '',
+  userName: '',
+  birthday: '',
+  sex: "M",
+  country: '',
+});
+
+const checkPass = (rule: any,value: any, callback: any) => {
+  if(value!==ruleForm.password){
+    callback(new Error("密碼確認不相符，請重新輸入!!!"))
+  }else{
+    callback()
+  }
+}
+
+const rules = reactive<FormRules<typeof ruleForm>>({
+  account: [
+    { required:true, message: "請輸入帳號", trigger: "blur"},
+    { max:20, message: "帳號不超過20個字", trigger: "blur"}
+  ],
+  password:[
+    { required:true, message: "請輸入密碼", trigger: "blur"},
+    { max:16, message: "密碼不超過16個字", trigger: "blur"}
+  ],
+  confirmPassword:[
+    { required:true, message: "請輸入二次密碼", trigger: "blur"},
+    { validator: checkPass, trigger: "blur"}
+  ],
+  userName:[
+    { required:true, message: "請輸入姓名", trigger: "blur"},
+    { max:10, message: "姓名不超過10個字", trigger: "blur"}
+  ],
+  birthday:[
+    { type: "date", required:true, message: "請輸入生日", trigger: "change"}
+  ],
+  country:[
+    { required:true, message: "請選擇國籍", trigger: "blur"}
+  ],
+})
+
+onMounted(async () => {
+  const resCodeDtl = await serviceApi.get(`${uiGetDtlCodeDesc}${countryStr}`)
+  codeDtlOptions.value = resCodeDtl.data;
+})
+const register = async (formEl: FormInstance | undefined) => {
+  if(!formEl) return
+  await formEl.validate(async (valid, fields)=>{
+    if(valid){
+      if(await getAllUser()){
+        let patMap = {
+          account: ruleForm.account,
+          password: ruleForm.password,
+          confirmPassword: ruleForm.confirmPassword,
+          userName: ruleForm.userName,
+          birthday: ruleForm.birthday,
+          sex: ruleForm.sex,
+          country: ruleForm.country,
+        }
+        const registerData = await serviceApi.post(uiRegisterUser,patMap)
+        if(registerData.status === 200){
+          showMessage(registerData.data,"success")
+          goBack();
+        }
+      }else{
+        showMessage("該帳號已被使用!!!","warning")
+      }
+    }
+  })
+};
+const goBack = () => {
+  router.push("/");
+};
+
+const getAllUser = async () => {
+  const userTotal = await serviceApi.get(`${uiGetAllUser}${ruleForm.account}`)
+  console.log(userTotal.data.length,'userTotal.data.length')
+  if(userTotal.data.length>0){
+    return false;
+  }else{
+    return true;
+  }
+}
+
 </script>
 
 <template>
-  <el-form label-position="right" label-width="80px" @submit.prevent>
+  <el-form :model="ruleForm" :rules="rules" ref="ruleFormRef" label-position="right" label-width="100px">
     <el-form-item class="wordStytle">註冊</el-form-item>
-      <el-form-item label="帳號 : ">
-        <el-input v-model="account"/>
+      <el-form-item label="帳號 : " prop="account">
+        <el-input v-model="ruleForm.account"/>
       </el-form-item>
-      <el-form-item label="密碼 : ">
-        <el-input v-model="password" show-password/>
+      <el-form-item label="密碼 : " prop="password">
+        <el-input v-model="ruleForm.password" show-password/>
       </el-form-item>
-      <el-form-item label="密碼確認 : ">
-        <el-input v-model="confirmPassword" show-password/>
+      <el-form-item label="密碼確認 : " prop="confirmPassword">
+        <el-input v-model="ruleForm.confirmPassword" show-password/>
       </el-form-item>
-      <el-form-item label="姓名 : ">
-        <el-input v-model="userName"/>
+      <el-form-item label="姓名 : " prop="userName">
+        <el-input v-model="ruleForm.userName"/>
       </el-form-item>
-      <el-form-item label="生日 : ">
+      <el-form-item label="生日 : " prop="birthday">
         <el-date-picker
-            v-model="birthday"
+            v-model="ruleForm.birthday"
             type="date"
             placeholder="請選擇"
             format="YYYY-MM-DD"
@@ -88,13 +134,13 @@ export default {
         ></el-date-picker>
       </el-form-item>
       <el-form-item label="性別 : ">
-        <el-radio-group v-model="sex">
+        <el-radio-group v-model="ruleForm.sex" >
           <el-radio value="M">男</el-radio>
           <el-radio value="F">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="國籍 : ">
-        <el-select v-model="country" placeholder="請選擇">
+      <el-form-item label="國籍 : " prop="country">
+        <el-select v-model="ruleForm.country" placeholder="請選擇">
           <el-option
               v-for="(item,index) in codeDtlOptions"
               :key="index"
@@ -104,7 +150,7 @@ export default {
           />
         </el-select>
       </el-form-item>
-      <el-button @click="register">註冊</el-button>
+      <el-button @click="register(ruleFormRef)">註冊</el-button>
       <el-button @click="goBack">返回</el-button>
   </el-form>
 </template>

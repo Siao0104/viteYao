@@ -1,5 +1,7 @@
 import mutations from "./mutations.js";
 import getters from "./getters.js";
+import serviceApi from "../../request/request.js";
+import {uiCheckToken} from "../../api/api.js";
 
 export default {
     namespaced: true,
@@ -7,8 +9,14 @@ export default {
         return {
             authenticated: false,
             account: "",
+            token: null,
         }
     },
     mutations,
-    getters
+    getters,
+    actions: {
+        checkToken(context){
+            serviceApi.get(uiCheckToken).then(r => {});
+        },
+    },
 }

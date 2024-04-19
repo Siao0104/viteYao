@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter} from "vue-router";
+import store from "../store/index.js";
 
 const routes = [
     {
@@ -19,6 +20,12 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: routes,
     linkActiveClass: 'active'
+})
+
+router.beforeEach((to,from,next)=>{
+    //在每次路由切換之前，檢查Token的有效性
+    store.dispatch('auth/checkToken');
+    next();
 })
 
 export default router;
