@@ -1,17 +1,17 @@
 //代碼主檔
-export const uiGetAllCodeMst = "/spring_yao/codeMst/uiGetAllCodeMst"
+export const uiGetAllCodeMst = "/springYao/codeMst/uiGetAllCodeMst"
 
 //dropDown內容
-export const uiGetDtlCodeDesc = "/spring_yao/codeDtl/uiGetDtlCodeDesc/";
+export const uiGetDtlCodeDesc = "/springYao/codeDtl/uiGetDtlCodeDesc/";
 
 //取得全部使用者
-export const uiGetAllUser = "/spring_yao/userBasic/uiGetAllUser/";
+export const uiGetAllUser = "/springYao/userBasic/uiGetAllUser/";
 
 //註冊
-export const uiRegisterUser = "/spring_yao/userBasic/uiRegisterUser";
+export const uiRegisterUser = "/springYao/userBasic/uiRegisterUser";
 
 //登入
-export const uiUserLogging = "/spring_yao/userBasic/uiUserLogging";
+export const uiUserLogging = "/springYao/userBasic/uiUserLogging";
 
 //路由驗證token
-export const uiCheckToken = "/spring_yao/userBasic/uiCheckToken";
+export const uiCheckToken = "/springYao/userBasic/uiCheckToken";
