@@ -1,18 +1,26 @@
 import { createWebHistory, createRouter} from "vue-router";
 import store from "../store/index.js";
+import HomeBackground from '../layout/HomeBackground.vue';
 
 const routes = [
     {
-      path: "/",
-      component: () => import('../components/logging/Logging.vue'),
+        path: '/',
+        component: HomeBackground,
+        children: [
+            {
+                path: "/",
+                component: () => import('../components/logging/Logging.vue'),
+            },
+            {
+                path: "/register",
+                component: () => import('../components/logging/Register.vue'),
+            },
+        ]
     },
+
     {
         path: "/home",
         component: () => import('../views/Welcome.vue'),
-    },
-    {
-        path: "/register",
-        component: () => import('../components/logging/Register.vue'),
     },
 ]
 

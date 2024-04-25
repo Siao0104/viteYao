@@ -56,27 +56,51 @@ export default {
 </script>
 
 <template>
-  <form name="login-form" @submit.prevent>
-    <div class="mb-3">
-      <label>帳號 : </label>
-      <input v-model="account" type="text" />
+  <div class="login-container">
+    <div class="login-form">
+      <form name="login-form" @submit.prevent>
+        <div class="mb-3">
+          <label>帳號 :</label>
+          <input v-model="account" type="text" />
+        </div>
+        <div class="mb-3">
+          <label>密碼 :</label>
+          <input v-model="password" type="password" />
+        </div>
+        <div class="button-container mb-3">
+          <button class="btn btn-outline-dark me-3" type="submit" @click="login">
+            登入
+          </button>
+          <button class="btn btn-outline-dark" type="submit" @click="registerPage">
+            註冊
+          </button>
+        </div>
+      </form>
     </div>
-    <div class="mb-3">
-      <label>密碼 : </label>
-      <input v-model="password" type="password" />
-    </div>
-    <div class="mb-3">
-      <button class="btn btn-outline-dark me-3" type="submit" @click="login">
-        登入
-      </button>
-      <button class="btn btn-outline-dark" type="submit" @click="registerPage">
-        註冊
-      </button>
-    </div>
-  </form>
+  </div>
 </template>
 
 <style scoped>
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: cover;
+}
+
+.login-form {
+  background-color: rgba(255, 255, 255, 0.8); /* 設定半透明背景色 */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* 加入陰影效果 */
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
 label {
   margin-right: 10px; /* 根據需要調整間距大小 */
 }
