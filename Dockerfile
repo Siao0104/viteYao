@@ -5,11 +5,6 @@ WORKDIR /app
 COPY package.json ./
 
 RUN npm install
-RUN npm install vue-router
-RUN npm install element-plus
-RUN npm install bootstrap@v5.3.3
-RUN npm install vuex@next
-RUN npm install axios
 
 COPY . ./
 
