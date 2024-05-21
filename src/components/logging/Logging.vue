@@ -1,5 +1,5 @@
 <script>
-import {SET_AUTHENTICATION, SET_ACCOUNT, SET_TOKEN} from "../../store/storeconstants.js";
+import {SET_AUTHENTICATION, SET_ACCOUNT, SET_TOKEN, SET_USERNAME} from "../../store/storeconstants.js";
 import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
@@ -30,9 +30,10 @@ export default {
         if(loggingData.status === 200){
           store.commit(`auth/${SET_AUTHENTICATION}`, true);
           store.commit(`auth/${SET_ACCOUNT}`, loggingData.data.account);
+          store.commit(`auth/${SET_USERNAME}`, loggingData.data.userName);
           store.commit(`auth/${SET_TOKEN}`, loggingData.data.accessToken);
           localStorage.setItem("accessToken",loggingData.data.accessToken)
-          router.push('/home');
+          router.push('/mainLayout');
         }
       }else{
         store.commit(`auth/${SET_AUTHENTICATION}`,false);

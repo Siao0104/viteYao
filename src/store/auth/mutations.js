@@ -1,8 +1,9 @@
 import {
+    CLEAR,
     RESET_STATE,
     SET_ACCOUNT,
     SET_AUTHENTICATION,
-    SET_TOKEN,
+    SET_TOKEN, SET_USERNAME,
 } from "../storeconstants.js";
 
 function getDefaultState() {
@@ -26,4 +27,13 @@ export default {
     [RESET_STATE](state){
         Object.assign(state,getDefaultState());
     },
+    [SET_USERNAME](state,userName){
+        state.userName = userName;
+    },
+    [CLEAR](state){
+        state.authenticated = false;
+        state.account = null;
+        state.token = null;
+        state.userName = null;
+    }
 }

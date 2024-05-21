@@ -1,6 +1,6 @@
 import {
     IS_USER_AUTHENTICATED,
-    GET_ACCOUNT, GET_TOKEN
+    GET_ACCOUNT, GET_TOKEN, GET_USERNAME
 } from "../storeconstants.js";
 
 export default {
@@ -14,5 +14,9 @@ export default {
 
     [GET_TOKEN](state){
         return state.token;
+    },
+
+    [GET_USERNAME](state){
+        return state.userName;
     }
 }

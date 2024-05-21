@@ -11,4 +11,10 @@ export const SET_TOKEN = '[mutations] set token';
 
 export const GET_TOKEN = '[getters] get token';
 
+export const SET_USERNAME = '[mutations] set userName';
+
+export const GET_USERNAME = '[getters] get userName';
+
 export const RESET_STATE= '[mutations] set reset state';
+
+export const CLEAR = 'clear all data';
