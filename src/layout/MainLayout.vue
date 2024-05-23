@@ -2,7 +2,7 @@
   <el-container class="layout-container">
     <el-aside width="200px">
       <el-scrollbar>
-        <el-menu :default-openeds="['1', '2']">
+        <el-menu @select="handleMenuSelect">
           <el-sub-menu index="1">
             <template #title>
               <el-icon><icon-menu /></el-icon>開發項目
@@ -13,7 +13,7 @@
             <template #title>
               <el-icon><setting /></el-icon>設定
             </template>
-            <el-menu-item > <el-icon><Edit /></el-icon>代碼維護 </el-menu-item>
+            <el-menu-item index="utility1010"> <el-icon><Edit /></el-icon>代碼維護 </el-menu-item>
           </el-sub-menu>
         </el-menu>
       </el-scrollbar>
@@ -32,6 +32,7 @@
               </el-dropdown-menu>
             </template>
           </el-dropdown>
+          <span>{{userName}}</span>
         </div>
       </el-header>
 
@@ -46,47 +47,85 @@
 
 <script lang="ts" setup>
 import { Menu as IconMenu, Star, Setting, Edit } from '@element-plus/icons-vue'
-import {CLEAR} from "../store/storeconstants.js";
+import {CLEAR, GET_USERNAME} from "../store/storeconstants.js";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
+import {computed} from "vue";
 
 const router = useRouter();
 const store = useStore();
+
+const userName = computed(()=> store.getters[`author/${GET_USERNAME}`])
+
+//登出
 const logOut = () => {
+  //清除store資料
   store.commit(`auth/${CLEAR}`);
+  //清除localStorage資料
   localStorage.clear();
   router.push("/");
+  //防止登出時，瀏覽器返回上一頁還能進入
   window.addEventListener('popstate',function () {
     window.history.forward();
   })
 }
+
+const handleMenuSelect = (index) => {
+  if(index === 'utility1010'){
+    console.log("測試用!!!")
+  }
+}
+
 </script>
 
 <style scoped>
-.layout-container .el-header {
+.layout-container {
   position: relative;
-  background-color: var(--el-color-primary-light-7);
+  background: url('../assets/maple2.jpg') ;
+  background-size: cover;
+}
+
+.layout-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.7); /* 半透明覆蓋層 */
+  pointer-events: none;
+}
+
+.layout-container .el-header,
+.layout-container .el-aside,
+.layout-container .el-main {
+  position: relative;
+  z-index: 2; /* 確保內容在背景圖片之上 */
+}
+
+.layout-container .el-header {
   color: var(--el-text-color-primary);
 }
+
 .layout-container .el-aside {
-  color: var(--el-text-color-primary);
-  background: var(--el-color-primary-light-8);
   height: 100vh;
   overflow: hidden;
+  color: var(--el-text-color-primary);
 }
-.layout-container .el-menu {
-  border-right: none;
-}
+
 .layout-container .el-main {
   padding: 0;
 }
+
 .layout-container .toolbar {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   height: 100%;
   right: 20px;
+  position: relative;
 }
+
 .large-coin {
   font-size: 24px;
   margin-right: 8px;

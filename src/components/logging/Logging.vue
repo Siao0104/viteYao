@@ -1,5 +1,12 @@
 <script>
-import {SET_AUTHENTICATION, SET_ACCOUNT, SET_TOKEN, SET_USERNAME} from "../../store/storeconstants.js";
+import {
+  SET_AUTHENTICATION,
+  SET_ACCOUNT,
+  SET_TOKEN,
+  SET_USERNAME,
+  GET_USERNAME,
+  GET_ACCOUNT
+} from "../../store/storeconstants.js";
 import {onMounted, ref} from "vue";
 import {useRouter} from "vue-router";
 import {useStore} from "vuex";
