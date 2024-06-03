@@ -10,6 +10,7 @@ export default {
             authenticated: false,
             account: "",
             token: null,
+            userName: "",
         }
     },
     mutations,

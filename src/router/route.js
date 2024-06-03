@@ -9,11 +9,11 @@ const routes = [
         children: [
             {
                 path: "/",
-                component: () => import('../components/logging/Logging.vue'),
+                component: () => import('../components/Logging.vue'),
             },
             {
                 path: "/register",
-                component: () => import('../components/logging/Register.vue'),
+                component: () => import('../components/Register.vue'),
             },
         ]
     },

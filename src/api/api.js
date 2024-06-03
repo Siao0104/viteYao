@@ -15,3 +15,9 @@ export const uiUserLogging = "/springYao/userBasic/uiUserLogging";
 
 //路由驗證token
 export const uiCheckToken = "/springYao/userBasic/uiCheckToken";
+
+//取得個人行事曆
+export const uiGetAllCalendar = "/springYao/userCalendar/uiGetAllCalendar/"
+
+//新增個人行事曆
+export const uiAddOwnCalendar = "/springYao/userCalendar/uiAddOwnCalendar"

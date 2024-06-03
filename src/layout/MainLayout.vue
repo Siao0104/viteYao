@@ -23,16 +23,19 @@
       <el-header class="header">
         <div class="toolbar">
           <el-dropdown>
-            <el-icon class="large-coin">
-              <setting />
-            </el-icon>
+            <div class="custom-avatar">
+              <el-icon class="large-coin"><UserFilled/></el-icon>
+            </div>
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item @click.native="logOut">登出</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
-          <span>{{ userName }}</span>
+          <span>{{userName}}</span>
+          <el-icon class="large-coin" @click="handleDrawer">
+            <setting />
+          </el-icon>
         </div>
       </el-header>
 
@@ -59,20 +62,27 @@
                     <el-button size="small" @click="selectDate('next-year')">明年</el-button>
                   </el-button-group>
                 </template>
+                <template #date-cell=" { data,date } ">
+                  <span>{{ obtainDay(data.day) }}</span>
+                  <div v-for="(item,index) in calendarData" :key="index">
+                    <div v-if="item.executeDay === data.day" :class="getCellClass(item)">
+                      {{ item.remark }}
+                    </div>
+                  </div>
+                </template>
               </el-calendar>
             </div>
             <div class="right-panel">
               <el-scrollbar>
                 <el-table :data="paginatedData">
-                  <el-table-column prop="date" label="Date" width="140" />
-                  <el-table-column prop="name" label="Name" width="120" />
-                  <el-table-column prop="address" label="Address" />
+                  <el-table-column prop="executeDay" label="Date" width="140" />
+                  <el-table-column prop="remark" label="remark" />
                 </el-table>
                 <div class="pagination-container">
                   <el-pagination
                       :current-page="currentPage"
                       :page-size="pageSize"
-                      :total="tableData.length"
+                       :total="calendarData.length"
                       @current-change="handlePageChange"
                       layout="prev, pager, next"
                   />
@@ -84,50 +94,37 @@
       </el-main>
     </el-container>
   </el-container>
+  <PersonalDrawer :isDrawer.sync="isDrawer" @update:isDrawer="val => isDrawer = val" @resetCalendar="resetCalendar"></PersonalDrawer>
 </template>
 
 <script lang="ts" setup>
-import { Menu as IconMenu, Star, Setting, Edit } from '@element-plus/icons-vue'
-import { CLEAR, GET_USERNAME } from "../store/storeconstants.js";
+import { Menu as IconMenu, Star, Setting, Edit, UserFilled } from '@element-plus/icons-vue'
+import {CLEAR, GET_ACCOUNT, GET_USERNAME} from "../store/storeconstants.js";
 import { useRouter } from "vue-router";
 import { useStore } from "vuex";
-import {computed, ref} from "vue";
-import {CalendarDateType, CalendarInstance} from "element-plus";
+import {computed, onMounted, ref} from "vue";
+import { ElCalendar, CalendarDateType, CalendarInstance} from "element-plus";
 import elementUiImage from '../assets/elementui.png';
 import githubImage from '../assets/github.png';
+import PersonalDrawer from "../components/PersonalDrawer.vue";
+import serviceApi from "../request/request.js";
+import {uiGetAllCalendar} from "../api/api.js";
+
 
 const router = useRouter();
 const store = useStore();
 const calendar = ref<CalendarInstance>()
-
-const tableData = ref([
-  { date: '2016-05-02', name: 'Tom', address: '1' },
-  { date: '2016-05-04', name: 'John', address: '2' },
-  { date: '2016-05-01', name: 'Doe', address: '3' },
-  { date: '2016-05-02', name: 'Tom', address: '4' },
-  { date: '2016-05-04', name: 'John', address: '5' },
-  { date: '2016-05-01', name: 'Doe', address: '6' },
-  { date: '2016-05-02', name: 'Tom', address: '7' },
-  { date: '2016-05-04', name: 'John', address: '8' },
-  { date: '2016-05-01', name: 'Doe', address: '9' },
-  { date: '2016-05-02', name: 'Tom', address: '10' },
-  { date: '2016-05-04', name: 'John', address: '11' },
-  { date: '2016-05-01', name: 'Doe', address: '12' },
-  { date: '2016-05-02', name: 'Tom', address: '13' },
-  { date: '2016-05-04', name: 'John', address: '14' },
-  { date: '2016-05-01', name: 'Doe', address: '15' },
-  { date: '2016-05-01', name: 'Doe', address: '16' }
-]);
-
+const calendarData = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(12);
 const paginatedData = computed(()=>{
   const start = (currentPage.value-1)*pageSize.value;
   const end = start + pageSize.value;
-  return tableData.value.slice(start,end);
+  return calendarData.value.slice(start,end);
 })
-
-const userName = computed(() => store.getters[`author/${GET_USERNAME}`]);
+const isDrawer = ref(false);
+const userName = computed(() => store.getters[`auth/${GET_USERNAME}`]);
+const userAccount = computed(() => store.getters[`auth/${GET_ACCOUNT}`]);
 
 const images = [
   {
@@ -170,6 +167,33 @@ const selectDate = (val: CalendarDateType) => {
 const handlePageChange = (page) => {
   currentPage.value = page;
 }
+
+//取月曆中的日期
+const obtainDay = (date) => {
+  const dateParts = date.split('-');
+  return dateParts[dateParts.length-1];
+}
+
+const getCellClass = (item) => {
+  return item.enabled == 1 ? 'important-cell' : 'normal-cell';
+}
+
+const handleDrawer = () => {
+  isDrawer.value = true;
+}
+
+const handleCalendarData = async (account) =>{
+  const response = await serviceApi.get(`${uiGetAllCalendar}${account.value}`);
+  calendarData.value = response.data;
+}
+
+const resetCalendar = () => {
+  handleCalendarData(userAccount);
+}
+
+onMounted(()=>{
+  handleCalendarData(userAccount);
+})
 </script>
 
 <style scoped>
@@ -224,8 +248,10 @@ const handlePageChange = (page) => {
 
 .large-coin {
   font-size: 24px;
-  margin-right: 8px;
+  margin-right: 5px;
+  margin-left: 8px;
   margin-top: 1px;
+  cursor: pointer;
 }
 
 .top-section {
@@ -263,5 +289,17 @@ const handlePageChange = (page) => {
   display: flex;
   justify-content: center;
   padding: 20px 0;
+}
+
+.important-cell {
+  background-color: orange;
+  color: black;
+  font-size: 12px;
+}
+
+.normal-cell {
+  background-color: lightblue;
+  color: black;
+  font-size: 12px;
 }
 </style>
