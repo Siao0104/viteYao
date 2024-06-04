@@ -75,8 +75,17 @@
             <div class="right-panel">
               <el-scrollbar>
                 <el-table :data="paginatedData">
-                  <el-table-column prop="executeDay" label="Date" width="140" />
-                  <el-table-column prop="remark" label="remark" />
+                    <el-table-column prop="executeDay" label="日期" width="140" />
+                    <el-table-column prop="remark" label="代辦事項" width="300">
+                      <template #default="scope">
+                        <el-tag :class="getCellClass(scope.row)">{{scope.row.remark}}</el-tag>
+                      </template>
+                    </el-table-column>
+                  <el-table-column label="刪除" width="80">
+                    <template #default="scope">
+                      <el-button size="small" type="danger" @click="handleDelCalendar(scope.row)">刪</el-button>
+                    </template>
+                  </el-table-column>
                 </el-table>
                 <div class="pagination-container">
                   <el-pagination
@@ -108,7 +117,8 @@ import elementUiImage from '../assets/elementui.png';
 import githubImage from '../assets/github.png';
 import PersonalDrawer from "../components/PersonalDrawer.vue";
 import serviceApi from "../request/request.js";
-import {uiGetAllCalendar} from "../api/api.js";
+import {uiDelOwnCalendar, uiGetAllCalendar} from "../api/api.js";
+import showMessage from "../components/message/message";
 
 
 const router = useRouter();
@@ -182,17 +192,28 @@ const handleDrawer = () => {
   isDrawer.value = true;
 }
 
-const handleCalendarData = async (account) =>{
+const handleGetCalendar = async (account) => {
   const response = await serviceApi.get(`${uiGetAllCalendar}${account.value}`);
   calendarData.value = response.data;
 }
 
+const handleDelCalendar = async (item) => {
+  const response = await serviceApi.delete(`${uiDelOwnCalendar}${item.id}`);
+  console.log(response.status,'response')
+  if(response.status === 200){
+    resetCalendar();
+    showMessage(response.data,"success")
+  }else{
+    showMessage(response.data,"error")
+  }
+}
+
 const resetCalendar = () => {
-  handleCalendarData(userAccount);
+  handleGetCalendar(userAccount);
 }
 
 onMounted(()=>{
-  handleCalendarData(userAccount);
+  handleGetCalendar(userAccount);
 })
 </script>
 

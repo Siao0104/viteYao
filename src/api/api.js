@@ -21,3 +21,6 @@ export const uiGetAllCalendar = "/springYao/userCalendar/uiGetAllCalendar/"
 
 //新增個人行事曆
 export const uiAddOwnCalendar = "/springYao/userCalendar/uiAddOwnCalendar"
+
+//刪除個人行事曆
+export const uiDelOwnCalendar = "/springYao/userCalendar/uiDelOwnCalendar/"
