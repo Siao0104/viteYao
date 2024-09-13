@@ -42,6 +42,9 @@ serviceApi.interceptors.response.use(
         if(error.response.status === 400){
             showMessage(error.response.data,"error");
         }
+        if(error.response.status === 500){
+            console.log(error)
+        }
         return Promise.reject(error)
 })
 

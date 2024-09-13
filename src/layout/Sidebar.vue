@@ -1,11 +1,13 @@
 <script lang="ts" setup>
-import { Menu as IconMenu, Edit, Setting, Star} from "@element-plus/icons-vue";
+import { Menu as IconMenu, Edit, Setting, Star, SetUp } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter()
 
+const emits = defineEmits(['addTabs','openTabs']);
 const handleMenuSelect = (index) => {
-  router.push(index);
+  emits('openTabs',index)
+  emits('addTabs', index)
 }
 
 </script>
@@ -18,13 +20,19 @@ const handleMenuSelect = (index) => {
           <template #title>
             <el-icon><icon-menu /></el-icon>開發項目
           </template>
-          <el-menu-item><el-icon><Star /></el-icon>ADT</el-menu-item>
+          <el-menu-item index="adt1010"><el-icon><Star /></el-icon>ADT</el-menu-item>
         </el-sub-menu>
         <el-sub-menu index="2">
           <template #title>
-            <el-icon><setting /></el-icon>設定
+            <el-icon><setting /></el-icon>設定檔
           </template>
-          <el-menu-item index="utility1010"> <el-icon><Edit /></el-icon>程式碼維護 </el-menu-item>
+          <el-menu-item index="utility1010"> <el-icon><Edit /></el-icon>代碼維護</el-menu-item>
+        </el-sub-menu>
+        <el-sub-menu index="3">
+          <template #title>
+            <el-icon><SetUp /></el-icon>設計版型
+          </template>
+          <el-menu-item index="MD1"> <el-icon><Edit /></el-icon>MD1</el-menu-item>
         </el-sub-menu>
       </el-menu>
     </el-scrollbar>

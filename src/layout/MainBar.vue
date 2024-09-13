@@ -8,6 +8,7 @@ import {uiDelOwnCalendar, uiGetAllCalendar} from "../api/api.js";
 import showMessage from "../components/message/message";
 import {GET_ACCOUNT} from "../store/storeconstants";
 import {useStore} from "vuex";
+import {useRouter} from "vue-router";
 
 const store = useStore();
 const calendar = ref<CalendarInstance>()
@@ -20,6 +21,7 @@ const paginatedData = computed(()=>{
   const end = start + pageSize.value;
   return calendarData.value.slice(start,end);
 })
+const router = useRouter();
 
 //外部連結圖片
 const images = [
@@ -85,7 +87,7 @@ onMounted(()=>{
 })
 
 defineExpose({
-  handleGetCalendar
+  handleGetCalendar,
 });
 </script>
 
@@ -173,11 +175,12 @@ defineExpose({
 }
 
 .carousel-image {
-  width: auto;
+  width: 100%;
   height: 100%;
   max-height: 150px; /* 設置最大高度，保持圖片比例 */
   cursor: pointer;
   object-fit: contain; /* 使圖片按比例縮放 */
+  padding: 1px;
 }
 
 .el-pagination {

@@ -33,7 +33,6 @@ const saveUserCalendar = async () => {
     enabled.value = 0;
     executeDay.value = '';
     emits('update:isDrawer',false)
-    emits('resetCalendar')
     showMessage(response.data,"success")
   }
 }

@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-<span>This is the utility1010 page</span>
+<span>This is the MD1 component</span>
 </template>
 
 <style scoped>

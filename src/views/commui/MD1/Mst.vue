@@ -1,11 +1,11 @@
 <script>
 export default {
-  name: "index"
+  name: "codeMst"
 }
 </script>
 
 <template>
-<span>This is the utility1010 page</span>
+
 </template>
 
 <style scoped>

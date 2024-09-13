@@ -1,43 +1,56 @@
 <template>
   <el-container class="layout-container">
-    <Sidebar/>
+    <Sidebar @addTabs="addTabs" @openTabs="openTabs"/>
     <el-container>
 
       <el-header class="header">
-        <HeaderBar @handleOpenDrawer="handleOpenDrawer"/>
+        <HeaderBar ref="headerBar"
+                   @handleOpenDrawer="handleOpenDrawer"
+                   @handleTabRouter="handleTabRouter"
+                   @handleBackMainBar="handleBackMainBar"/>
       </el-header>
 
       <el-main class="main">
-        <MainBar ref="mainBar"/>
+        <router-view/>
       </el-main>
     </el-container>
   </el-container>
-  <PersonalDrawer :isDrawer.sync="isDrawer" @update:isDrawer="val => isDrawer = val" @resetCalendar="resetCalendar"></PersonalDrawer>
+  <PersonalDrawer :isDrawer.sync="isDrawer" @update:isDrawer="val => isDrawer = val"></PersonalDrawer>
 </template>
 
 <script lang="ts" setup>
-import {GET_ACCOUNT} from "../store/storeconstants.js";
 import { useRouter } from "vue-router";
-import { useStore } from "vuex";
-import {computed, ref} from "vue";
+import { ref } from "vue";
 import PersonalDrawer from "../components/PersonalDrawer.vue";
 import Sidebar from "./Sidebar.vue";
 import HeaderBar from "./HeaderBar.vue";
-import MainBar from "./MainBar.vue";
 
 const router = useRouter();
-const store = useStore();
 const isDrawer = ref(false);
-const userAccount = computed(() => store.getters[`auth/${GET_ACCOUNT}`]);
-const mainBar = ref(null);
+const headerBar = ref(null);
 
 //開啟右側抽屜
 const handleOpenDrawer = () => {
   isDrawer.value = true;
 }
 
-const resetCalendar = () => {
-  mainBar.value.handleGetCalendar(userAccount);
+//增加header的標籤
+const addTabs = (menuText: string,) => {
+  headerBar.value.handleAddTabs(menuText);
+}
+
+//增加標籤的主體內容
+const openTabs = (menuName: string) => {
+  router.push('/'+menuName);
+}
+
+//點擊標籤切換頁面
+const handleTabRouter = (menuName: string) => {
+  router.push('/'+menuName);
+}
+
+const handleBackMainBar = () => {
+  router.push('/mainLayout');
 }
 </script>
 
@@ -67,18 +80,19 @@ const resetCalendar = () => {
 }
 
 .layout-container .el-header {
+  height: 5%;
   display: flex;
   justify-content: flex-end;
-  color: var(--el-text-color-primary);
+  background-color: white;
 }
 
 .layout-container .el-aside {
   height: 100vh;
   overflow: hidden;
-  color: var(--el-text-color-primary);
 }
 
 .layout-container .el-main {
   padding: 0;
+  margin-top: 10px; /* 確保 main 的頂部有足夠的間隙 */
 }
 </style>
