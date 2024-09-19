@@ -2,11 +2,11 @@
 import {ElCalendar, CalendarDateType, CalendarInstance} from "element-plus";
 import elementUiImage from '../assets/elementui.png';
 import githubImage from '../assets/github.png';
-import {computed, onMounted, ref} from "vue";
+import {computed, onMounted, ref, watch} from "vue";
 import serviceApi from "../request/request.js";
 import {uiDelOwnCalendar, uiGetAllCalendar} from "../api/api.js";
 import showMessage from "../components/message/message";
-import {GET_ACCOUNT} from "../store/storeconstants";
+import {GET_ACCOUNT, GET_CALENDAR_DATA, SET_CALENDAR_DATA} from "../store/storeconstants";
 import {useStore} from "vuex";
 import {useRouter} from "vue-router";
 
@@ -16,6 +16,7 @@ const calendarData = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(12);
 const userAccount = computed(() => store.getters[`auth/${GET_ACCOUNT}`]);
+const refreshCalendar = computed(() => store.getters[`uiPage/${GET_CALENDAR_DATA}`]);
 const paginatedData = computed(()=>{
   const start = (currentPage.value-1)*pageSize.value;
   const end = start + pageSize.value;
@@ -81,6 +82,14 @@ const handleDelCalendar = async (item) => {
 const resetCalendar = () => {
   handleGetCalendar(userAccount);
 }
+
+// 在 refreshCalendar 變成 true 時，重新獲取日曆數據
+watch(refreshCalendar, (newValue) => {
+  if (newValue === true) {
+    handleGetCalendar(userAccount);
+    store.commit(`uiPage/${SET_CALENDAR_DATA}`, false);
+  }
+});
 
 onMounted(()=>{
   handleGetCalendar(userAccount);

@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import {computed, defineProps, ref} from 'vue';
 import {useStore} from "vuex";
-import {GET_ACCOUNT} from "../store/storeconstants.js";
+import {GET_ACCOUNT, SET_CALENDAR_DATA} from "../store/storeconstants.js";
 import serviceApi from "../request/request.js";
 import {uiAddOwnCalendar} from "../api/api";
 import showMessage from "./message/message";
@@ -34,6 +34,7 @@ const saveUserCalendar = async () => {
     executeDay.value = '';
     emits('update:isDrawer',false)
     showMessage(response.data,"success")
+    store.commit(`uiPage/${SET_CALENDAR_DATA}`, true);
   }
 }
 </script>

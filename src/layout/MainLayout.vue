@@ -75,6 +75,7 @@ const handleBackMainBar = () => {
 .layout-container .el-header,
 .layout-container .el-aside,
 .layout-container .el-main {
+  overflow: hidden;
   position: relative;
   z-index: 2;
 }
