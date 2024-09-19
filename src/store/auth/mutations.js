@@ -2,7 +2,7 @@ import {
     CLEAR,
     RESET_STATE,
     SET_ACCOUNT,
-    SET_AUTHENTICATION,
+    SET_AUTHENTICATION, SET_CALENDAR_DATA,
     SET_TOKEN, SET_USERNAME,
 } from "../storeconstants.js";
 
@@ -11,6 +11,7 @@ function getDefaultState() {
         authenticated: false,
         account: "",
         token: null,
+        calendarData: false,
     }
 }
 
@@ -35,5 +36,5 @@ export default {
         state.account = null;
         state.token = null;
         state.userName = null;
-    }
+    },
 }

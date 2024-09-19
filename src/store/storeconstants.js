@@ -18,3 +18,11 @@ export const GET_USERNAME = '[getters] get userName';
 export const RESET_STATE= '[mutations] set reset state';
 
 export const CLEAR = 'clear all data';
+
+/*上方底層登入、登出、帳號相關常數*/
+
+/*下方一般程式使用到的常數*/
+
+export const GET_CALENDAR_DATA = '[getters] get calendarData';
+
+export const SET_CALENDAR_DATA = '[mutations] set calendarData';
