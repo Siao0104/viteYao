@@ -1,5 +1,14 @@
+/**         CodeMst API         **/
 //代碼主檔
 export const uiGetAllCodeMst = "/springYao/codeMst/uiGetAllCodeMst"
+//代碼主檔頁籤
+export const uiGetAllCodeMstPageable = "/springYao/codeMst/uiGetAllCodeMstPageable"
+//新增/修改代碼主檔
+export const uiSaveCodeMst = "/springYao/codeMst/uiSaveCodeMst"
+//刪除代碼主檔
+export const uiDeleteCodeMst = "/springYao/codeMst/uiDeleteCodeMst/"
+/**         CodeMst API         **/
+
 
 //dropDown內容
 export const uiGetDtlCodeDesc = "/springYao/codeDtl/uiGetDtlCodeDesc/";
