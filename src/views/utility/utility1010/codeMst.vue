@@ -50,11 +50,11 @@
 
 <script lang="ts" setup>
 import { getHeaderCellStyle } from '../../utils/commcss'
-import {Plus,Check, DeleteFilled} from "@element-plus/icons-vue";
+import {Plus,Check, DeleteFilled} from "@element-plus/icons-vue"
 import {ref, reactive, onMounted, watch} from 'vue'
-import serviceApi from "../../../request/request";
-import {uiGetAllCodeMstPageable, uiSaveCodeMst, uiDeleteCodeMst} from "../../../api/api";
-import showMessage from "../../../components/message/message";
+import serviceApi from "../../../request/request"
+import {uiGetAllCodeMstPageable, uiSaveCodeMst, uiDeleteCodeMst} from "../../../api/api"
+import showMessage from "../../../components/message/message"
 import { changeRowStatus } from '../../utils/commmethod'
 interface Code {
   id: number

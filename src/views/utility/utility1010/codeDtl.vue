@@ -43,7 +43,7 @@
 
 <script lang="ts" setup>
 import { getHeaderCellStyle } from '../../utils/commcss'
-import {DeleteFilled, Plus, Check} from "@element-plus/icons-vue";
+import {DeleteFilled, Plus, Check} from "@element-plus/icons-vue"
 import {computed, reactive, ref} from 'vue'
 
 interface Code {
