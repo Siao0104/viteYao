@@ -1,17 +1,20 @@
 /**         CodeMst API         **/
-//代碼主檔
-export const uiGetAllCodeMst = "/springYao/codeMst/uiGetAllCodeMst"
-//代碼主檔頁籤
+//代碼主檔列表
 export const uiGetAllCodeMstPageable = "/springYao/codeMst/uiGetAllCodeMstPageable"
 //新增/修改代碼主檔
 export const uiSaveCodeMst = "/springYao/codeMst/uiSaveCodeMst"
 //刪除代碼主檔
 export const uiDeleteCodeMst = "/springYao/codeMst/uiDeleteCodeMst/"
+//刪除代碼明細
+export const uiDeleteCodeDtl = "/springYao/codeMst/uiDeleteCodeDtl/";
 /**         CodeMst API         **/
 
-
+/**         CodeDtl API         **/
 //dropDown內容
 export const uiGetDtlCodeDesc = "/springYao/codeDtl/uiGetDtlCodeDesc/";
+//代碼明細列表
+export const uiGetAllCodeDtlPageable = "/springYao/codeDtl/uiGetAllCodeDtlPageable";
+/**         CodeDtl API         **/
 
 //取得全部使用者
 export const uiGetAllUser = "/springYao/userBasic/uiGetAllUser/";

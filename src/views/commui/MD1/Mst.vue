@@ -160,8 +160,8 @@ defineExpose({
 <style scoped>
 .table-style {
   width: 100%;
-  max-height: 300px;
-  height: 300px;
+  max-height: 350px;
+  height: 350px;
   overflow: auto;
 }
 .header-button {

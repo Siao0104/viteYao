@@ -29,7 +29,7 @@
     <el-table-column align="right">
       <template #header>
         <div class="header-button">
-          <el-button size="small" @click="handleNewRow"><el-icon><Plus/></el-icon>新增</el-button>
+          <el-button size="small" @click="handleSelectNewRow"><el-icon><Plus/></el-icon>新增</el-button>
           <el-button size="small" style="margin-left: 1px" @click="handleSave"><el-icon><Check/></el-icon>保存</el-button>
           <el-input clearable @change="handleSearch" v-model="search" size="small" placeholder="查詢(代碼/生效否)" />
         </div>
@@ -64,15 +64,15 @@ interface Code {
   enabled: string
   rowStatus: string
 }
-let tableData = reactive<Code[]>([])
 const search = ref('')
-
+let tableData = reactive<Code[]>([])
 const props = defineProps({
   currentPage: Number,
   pageSize: Number,
 })
+const emits = defineEmits(['updateMstPagination','mstRowClick','currentTableClick','handleSelectNewRow'])
 
-const emits = defineEmits(['updateMstPagination'])
+let mstId = ref<number>()
 
 const handleSearch = (value: string) => {
   search.value = value
@@ -135,7 +135,13 @@ const handleCodeMst = async () => {
 }
 
 const handleRowClick = (row: Code) => {
-  console.log(row,'當前行資料')
+  mstId.value = row.id
+  emits('mstRowClick', row.id)
+  emits('currentTableClick', 'mst')
+}
+
+const handleSelectNewRow = () => {
+  emits('handleSelectNewRow')
 }
 
 // 監聽分頁參數的變化並重新查詢
@@ -147,14 +153,16 @@ onMounted(() => {
 
 defineExpose({
   handleCodeMst,
+  handleNewRow,
+  mstId
 })
 </script>
 
 <style scoped>
 .table-style {
   width: 100%;
-  max-height: 300px;
-  height: 300px;
+  max-height: 350px;
+  height: 350px;
   overflow: auto;
 }
 .header-button {

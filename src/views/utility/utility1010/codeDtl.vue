@@ -1,5 +1,10 @@
 <template>
-  <el-table highlight-current-row :data="filterTableData" class="table-style" :header-cell-style="getHeaderCellStyle">
+  <el-table
+      highlight-current-row
+      :data="tableData"
+      class="table-style"
+      :header-cell-style="getHeaderCellStyle"
+      @row-click="handleRowClick">
     <el-table-column label="代碼" prop="code">
       <template #default="scope">
         <el-input v-model="scope.row.code" />
@@ -21,12 +26,6 @@
       </template>
     </el-table-column>
     <el-table-column align="right">
-      <template #header>
-        <div class="header-button">
-          <el-button size="small" @click="handleNewRow"><el-icon><Plus/></el-icon>新增</el-button>
-          <el-button size="small" style="margin-left: 1px"><el-icon><Check/></el-icon>保存</el-button>
-        </div>
-      </template>
       <template #default="scope">
         <el-button
             size="small"
@@ -44,64 +43,73 @@
 <script lang="ts" setup>
 import { getHeaderCellStyle } from '../../utils/commcss'
 import {DeleteFilled, Plus, Check} from "@element-plus/icons-vue"
-import {computed, reactive, ref} from 'vue'
+import {reactive} from 'vue'
+import serviceApi from "../../../request/request"
+import { uiGetAllCodeDtlPageable, uiDeleteCodeDtl } from '../../../api/api'
+import showMessage from "../../../components/message/message"
 
 interface Code {
+  id: number
+  version: number
   code: string
   codeDesc: string
   enabled: string
+  codeMstId: number
+  rowStatus: string
 }
+const tableData = reactive<Code[]>([])
+const emits = defineEmits(['updateDtlPagination','dtlRowClick','currentTableClick'])
 
-const tableData = reactive<Code[]>([
-  {
-    code: 'test',
-    codeDesc: '測試',
-    enabled: 'Y',
-  },
-  {
-    code: 'test1',
-    codeDesc: '測試1',
-    enabled: 'N',
-  },
-  {
-    code: 'test2',
-    codeDesc: '測試2',
-    enabled: 'N',
-  },
-  {
-    code: 'qaq',
-    codeDesc: 'QAQ',
-    enabled: 'N',
-  },
-])
-
-const search = ref('')
-const filterTableData = computed(() =>
-    tableData.filter(
-        (data) =>
-            !search.value ||
-            data.code.toLowerCase().includes(search.value.toLowerCase()) ||
-            data.enabled.toLowerCase().includes(search.value.toLowerCase())
-    )
-)
-const handleDelete = (index: number, row: Code) => {
-  console.log(index, row)
+const handleDelete = async (index: number, row: Code) => {
+  const response = await serviceApi.delete(`${uiDeleteCodeDtl}${row.id}/${row.codeMstId}`)
+  if(response.status === 200){
+    showMessage(response.data,"success")
+    await handleCodeDtl(row.codeMstId,1,10)
+  }else{
+    showMessage(response.data,"error")
+  }
 }
-const handleNewRow = () => {
+const handleNewRow = (codeMstId: number) => {
   const newRow: Code = {
+    id: 0,
+    version: 0,
     code: '',
     codeDesc: '',
     enabled: 'Y',
+    codeMstId: codeMstId,
+    rowStatus: 'C'
   }
   tableData.unshift(newRow)
 }
+
+const handleCodeDtl = async (id: number,page: number,pageSize: number) => {
+  const searchParams = {
+    codeMstId: id,
+    page: page,
+    size: pageSize,
+  }
+  const response = await serviceApi.post(uiGetAllCodeDtlPageable,searchParams)
+  if(response.status === 200){
+    tableData.splice(0,tableData.length,...response.data.data)
+    emits('updateDtlPagination', response.data.totalItems)
+  }
+}
+
+const handleRowClick = () => {
+  emits('currentTableClick', 'dtl')
+}
+
+defineExpose({
+  handleCodeDtl,
+  handleNewRow
+})
 </script>
 
 <style scoped>
 .table-style {
   width: 100%;
-  max-height: 400px;
-  height: 400px;
+  max-height: 350px;
+  height: 350px;
   overflow: auto;
 }
 .header-button {

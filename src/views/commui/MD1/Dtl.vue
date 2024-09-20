@@ -100,8 +100,8 @@ const handleNewRow = () => {
 <style scoped>
 .table-style {
   width: 100%;
-  max-height: 400px;
-  height: 400px;
+  max-height: 350px;
+  height: 350px;
   overflow: auto;
 }
 .header-button {

@@ -38,12 +38,8 @@ serviceApi.interceptors.response.use(
             }else{
                 showMessage("查無此帳號相關權限，請重新確認帳密!!","error");
             }
-        }
-        if(error.response.status === 400){
+        }else{
             showMessage(error.response.data,"error");
-        }
-        if(error.response.status === 500){
-            console.log(error)
         }
         return Promise.reject(error)
 })

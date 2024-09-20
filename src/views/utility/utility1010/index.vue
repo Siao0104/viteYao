@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import CodeMst from "../utility1010/CodeMst.vue"
 import CodeDtl from "../utility1010/CodeDtl.vue"
-import {ref} from 'vue'
+import {ref, watch} from 'vue'
 import {ComponentSize} from "element-plus";
 
 const mstCurrentPage = ref(1)
@@ -13,6 +13,7 @@ const dtlTotalItems = ref(0)
 const size = ref<ComponentSize>('small')
 const codeMst = ref(null)
 const codeDtl = ref(null)
+const defaultTable = ref('mst')
 
 const handleMstSizeChange = (val: number) => {
   mstPageSize.value = val
@@ -26,17 +27,39 @@ const handleUpdateMstPagination = (total: number) => {
   mstTotalItems.value = total
 }
 
-const handleDtlSizeChange = (val: number) => {
+const handleMstRowClick = (id: number) => {
+  codeDtl.value.handleCodeDtl(id,dtlCurrentPage.value,dtlPageSize.value)
+}
 
+const handleDtlSizeChange = (val: number) => {
+  dtlPageSize.value = val
+  codeDtl.value.handleCodeDtl(codeMst.value.mstId,dtlCurrentPage.value,dtlPageSize.value)
 }
 const handleDtlCurrentChange = (val: number) => {
-
+  dtlCurrentPage.value = val
+  codeDtl.value.handleCodeDtl(codeMst.value.mstId,dtlCurrentPage.value,dtlPageSize.value)
 }
 
 const handleUpdateDtlPagination = (total: number) =>{
-
+  dtlTotalItems.value = total
 }
 
+const currentTableClick = (table: string) => {
+  if(table === 'mst'){
+    defaultTable.value = table
+  }else if(table === 'dtl'){
+    defaultTable.value = table
+  }
+}
+
+const handleSelectNewRow = () => {
+  if(defaultTable.value ==='mst'){
+    codeMst.value.handleNewRow()
+    codeDtl.value.handleNewRow(codeMst.value.mstId)
+  }else if(defaultTable.value === 'dtl'){
+    codeDtl.value.handleNewRow()
+  }
+}
 </script>
 
 <template>
@@ -57,7 +80,14 @@ const handleUpdateDtlPagination = (total: number) =>{
         />
       </div>
       <div class="content">
-        <CodeMst ref="codeMst" :current-page="mstCurrentPage" :page-size="mstPageSize" @updateMstPagination="handleUpdateMstPagination"></CodeMst>
+        <CodeMst
+            ref="codeMst"
+            :current-page="mstCurrentPage"
+            :page-size="mstPageSize"
+            @updateMstPagination="handleUpdateMstPagination"
+            @mstRowClick="handleMstRowClick"
+            @currentTableClick="currentTableClick"
+            @handleSelectNewRow="handleSelectNewRow"></CodeMst>
       </div>
     </div>
     <div class="ui-down-container">
@@ -70,13 +100,16 @@ const handleUpdateDtlPagination = (total: number) =>{
             :background=true
             :size="size"
             layout="sizes, prev, pager, next"
-            :total="10"
+            :total="dtlTotalItems"
             @size-change="handleDtlSizeChange"
             @current-change="handleDtlCurrentChange"
         />
       </div>
       <div class="content">
-        <CodeDtl></CodeDtl>
+        <CodeDtl
+            ref="codeDtl"
+            @updateDtlPagination="handleUpdateDtlPagination"
+            @currentTableClick="currentTableClick"></CodeDtl>
       </div>
     </div>
   </div>
