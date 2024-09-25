@@ -19,7 +19,9 @@
       <template #default="scope">
         <el-switch
             style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949"
-            v-model="scope.row.enabled"
+            :model-value="scope.row.enabled === 'Y'"
+            @change="handleSwitchChange(scope.row)"
+            @click.stop
             inline-prompt
             active-text="Y"
             inactive-text="N"/>
@@ -60,16 +62,24 @@ interface Code {
 const tableData = reactive<Code[]>([])
 const emits = defineEmits(['updateDtlPagination','dtlRowClick','currentTableClick'])
 
+//刪除dtl，新增時為移除
 const handleDelete = async (index: number, row: Code) => {
-  const response = await serviceApi.delete(`${uiDeleteCodeDtl}${row.id}/${row.codeMstId}`)
-  if(response.status === 200){
-    showMessage(response.data,"success")
-    await handleCodeDtl(row.codeMstId,1,10)
+  if(row.id === 0){
+    tableData.splice(index, 1)
   }else{
-    showMessage(response.data,"error")
+    const response = await serviceApi.delete(`${uiDeleteCodeDtl}${row.id}/${row.codeMstId}`)
+    if(response.status === 200){
+      showMessage(response.data,"success")
+      await handleCodeDtl(row.codeMstId,1,10)
+    }else{
+      showMessage(response.data,"error")
+    }
   }
 }
+
+//新增dtl
 const handleNewRow = (codeMstId: number) => {
+  console.log(codeMstId)
   const newRow: Code = {
     id: 0,
     version: 0,
@@ -79,9 +89,19 @@ const handleNewRow = (codeMstId: number) => {
     codeMstId: codeMstId,
     rowStatus: 'C'
   }
-  tableData.unshift(newRow)
+  //mstId為0時，新增一個空白的dtl，否則直接新增dtl
+  if(codeMstId!==0){
+    tableData.unshift(newRow)
+  }else{
+    //只有在mst也是新增時，第一次才要清空原本的dtl
+    if((codeMstId === 0  || codeMstId === undefined) && newRow.codeMstId !== 0) {
+      tableData.splice(0)
+    }
+    tableData.unshift(newRow)
+  }
 }
 
+//查詢dtl
 const handleCodeDtl = async (id: number,page: number,pageSize: number) => {
   const searchParams = {
     codeMstId: id,
@@ -95,13 +115,18 @@ const handleCodeDtl = async (id: number,page: number,pageSize: number) => {
   }
 }
 
+const handleSwitchChange = (row) => {
+  row.enabled = row.enabled === 'Y' ? 'N' : 'Y';
+}
+
 const handleRowClick = () => {
   emits('currentTableClick', 'dtl')
 }
 
 defineExpose({
   handleCodeDtl,
-  handleNewRow
+  handleNewRow,
+  tableData
 })
 </script>
 

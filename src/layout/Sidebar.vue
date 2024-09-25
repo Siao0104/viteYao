@@ -28,12 +28,6 @@ const handleMenuSelect = (index) => {
           </template>
           <el-menu-item index="utility1010"> <el-icon><Edit /></el-icon>代碼維護</el-menu-item>
         </el-sub-menu>
-        <el-sub-menu index="3">
-          <template #title>
-            <el-icon><SetUp /></el-icon>設計版型
-          </template>
-          <el-menu-item index="MD1"> <el-icon><Edit /></el-icon>MD1</el-menu-item>
-        </el-sub-menu>
       </el-menu>
     </el-scrollbar>
   </el-aside>

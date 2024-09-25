@@ -31,10 +31,6 @@ const routes = [
                 component: () => import('../views/adt/adt1010/index.vue'),
             },
             {
-                path: "/MD1",
-                component: () => import('../views/commui/MD1/index.vue'),
-            },
-            {
                 path: "/utility1010",
                 component: () => import('../views/utility/utility1010/index.vue'),
             },

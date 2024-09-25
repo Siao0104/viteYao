@@ -1,8 +1,11 @@
 <script lang="ts" setup>
 import CodeMst from "../utility1010/CodeMst.vue"
 import CodeDtl from "../utility1010/CodeDtl.vue"
-import {ref, watch} from 'vue'
+import {ref} from 'vue'
 import {ComponentSize} from "element-plus";
+import serviceApi from "../../../request/request"
+import { uiSaveCodeMst } from "../../../api/api"
+import showMessage from "../../../components/message/message"
 
 const mstCurrentPage = ref(1)
 const mstPageSize = ref(10)
@@ -15,49 +18,88 @@ const codeMst = ref(null)
 const codeDtl = ref(null)
 const defaultTable = ref('mst')
 
+//mst頁面大小更動，查詢mst資料
 const handleMstSizeChange = (val: number) => {
   mstPageSize.value = val
   codeMst.value.handleCodeMst()
 }
+
+//mst當前頁面更動
 const handleMstCurrentChange = (val: number) => {
   mstCurrentPage.value = val
 }
 
+//更動mst pagination
 const handleUpdateMstPagination = (total: number) => {
   mstTotalItems.value = total
 }
 
+//點擊mst table row，刷新dtl table
 const handleMstRowClick = (id: number) => {
   codeDtl.value.handleCodeDtl(id,dtlCurrentPage.value,dtlPageSize.value)
 }
 
+//dtl頁面大小更動，查詢dtl資料
 const handleDtlSizeChange = (val: number) => {
   dtlPageSize.value = val
   codeDtl.value.handleCodeDtl(codeMst.value.mstId,dtlCurrentPage.value,dtlPageSize.value)
 }
+
+//dtl當前頁面更動
 const handleDtlCurrentChange = (val: number) => {
   dtlCurrentPage.value = val
   codeDtl.value.handleCodeDtl(codeMst.value.mstId,dtlCurrentPage.value,dtlPageSize.value)
 }
 
+//更動dtl pagination
 const handleUpdateDtlPagination = (total: number) =>{
   dtlTotalItems.value = total
 }
 
+//根據點擊的table，決定新增按鈕的狀態、要新增的table row
 const currentTableClick = (table: string) => {
   if(table === 'mst'){
     defaultTable.value = table
   }else if(table === 'dtl'){
     defaultTable.value = table
+    codeMst.value.handleChangeBtnStatus(false);
   }
 }
 
+//刷新mst、dtl table
+const handleRefresh = () => {
+  defaultTable.value ='mst'
+  codeMst.value.handleCodeMst()
+  codeDtl.value.handleCodeDtl(codeMst.value.mstId,dtlCurrentPage.value,dtlPageSize.value)
+}
+
+//決定新增的table row，mst都新增、dtl只新增dtl
 const handleSelectNewRow = () => {
   if(defaultTable.value ==='mst'){
     codeMst.value.handleNewRow()
     codeDtl.value.handleNewRow(codeMst.value.mstId)
+    codeMst.value.handleChangeBtnStatus(true);
   }else if(defaultTable.value === 'dtl'){
-    codeDtl.value.handleNewRow()
+    codeDtl.value.handleNewRow(codeMst.value.mstId)
+  }
+}
+
+//儲存mst、dtl資料
+const saveMstAndDtl = async (mstTable: any) => {
+  let saveArray = []
+  mstTable.forEach((item: any) => {
+    if(item.id === codeDtl.value.tableData[0].codeMstId || (item.id === 0 && codeDtl.value.tableData[0].id === 0)){
+      item.codeDtlEntities = codeDtl.value.tableData
+      saveArray.push(item)
+    }
+  })
+  const response = await serviceApi.post(uiSaveCodeMst, saveArray);
+  if(response.status === 200){
+    showMessage(response.data,"success")
+    handleRefresh()
+  }else{
+    showMessage(response.data,"error")
+    handleRefresh()
   }
 }
 </script>
@@ -87,7 +129,9 @@ const handleSelectNewRow = () => {
             @updateMstPagination="handleUpdateMstPagination"
             @mstRowClick="handleMstRowClick"
             @currentTableClick="currentTableClick"
-            @handleSelectNewRow="handleSelectNewRow"></CodeMst>
+            @handleSelectNewRow="handleSelectNewRow"
+            @saveMstAndDtl="saveMstAndDtl"
+            @handleRefresh="handleRefresh"></CodeMst>
       </div>
     </div>
     <div class="ui-down-container">
