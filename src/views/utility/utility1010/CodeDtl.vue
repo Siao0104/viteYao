@@ -45,7 +45,7 @@
 <script lang="ts" setup>
 import { getHeaderCellStyle } from '../../utils/commcss'
 import {DeleteFilled, Plus, Check} from "@element-plus/icons-vue"
-import {reactive} from 'vue'
+import {reactive, watch} from 'vue'
 import serviceApi from "../../../request/request"
 import { uiGetAllCodeDtlPageable, uiDeleteCodeDtl } from '../../../api/api'
 import showMessage from "../../../components/message/message"
@@ -61,6 +61,7 @@ interface Code {
 }
 const tableData = reactive<Code[]>([])
 const emits = defineEmits(['updateDtlPagination','dtlRowClick','currentTableClick'])
+let firstCreated = true
 
 //刪除dtl，新增時為移除
 const handleDelete = async (index: number, row: Code) => {
@@ -79,7 +80,7 @@ const handleDelete = async (index: number, row: Code) => {
 
 //新增dtl
 const handleNewRow = (codeMstId: number) => {
-  console.log(codeMstId)
+  console.log(firstCreated)
   const newRow: Code = {
     id: 0,
     version: 0,
@@ -93,8 +94,9 @@ const handleNewRow = (codeMstId: number) => {
   if(codeMstId!==0){
     tableData.unshift(newRow)
   }else{
-    //只有在mst也是新增時，第一次才要清空原本的dtl
-    if((codeMstId === 0  || codeMstId === undefined) && newRow.codeMstId !== 0) {
+    //只有第一次mst新增才要清dtl
+    if(firstCreated) {
+      firstCreated = false
       tableData.splice(0)
     }
     tableData.unshift(newRow)
@@ -103,6 +105,8 @@ const handleNewRow = (codeMstId: number) => {
 
 //查詢dtl
 const handleCodeDtl = async (id: number,page: number,pageSize: number) => {
+  //重新查詢時刷新firstCreated判斷
+  firstCreated = true
   const searchParams = {
     codeMstId: id,
     page: page,

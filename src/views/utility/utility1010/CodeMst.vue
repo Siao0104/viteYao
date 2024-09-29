@@ -58,12 +58,14 @@ import serviceApi from "../../../request/request"
 import {uiGetAllCodeMstPageable, uiDeleteCodeMst} from "../../../api/api"
 import showMessage from "../../../components/message/message"
 import { changeRowStatus } from '../../utils/commmethod'
+import {dayjs} from "element-plus";
 interface Code {
   id: number
   version: number
   code: string
   codeDesc: string
   enabled: string
+  createdDate: string
   rowStatus: string
 }
 const search = ref('')
