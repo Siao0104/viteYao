@@ -36,3 +36,9 @@ export const uiAddOwnCalendar = "/springYao/userCalendar/uiAddOwnCalendar"
 
 //刪除個人行事曆
 export const uiDelOwnCalendar = "/springYao/userCalendar/uiDelOwnCalendar/"
+
+//重定向到 Google OAuth 2.0 驗證頁面
+export const uiRedirectToGoogleOAuth = "/springYao/Mail/uiRedirectToGoogleOAuth";
+
+//檢查連結Token是否有效
+export const uiCheckTokenDead = "/springYao/Mail/uiCheckTokenDead";

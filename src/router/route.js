@@ -36,6 +36,11 @@ const routes = [
             },
         ]
     },
+
+    {
+        path: "/mail",
+        component: () => import('../components/Mail.vue'),
+    },
 ]
 
 const router = createRouter({
