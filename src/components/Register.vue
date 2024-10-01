@@ -26,6 +26,12 @@
               value-format="YYYY-MM-DD"
           ></el-date-picker>
         </el-form-item>
+        <el-form-item label="email : " prop="email">
+          <el-input
+              v-model="ruleForm.email"
+              placeholder="請輸入"
+          ></el-input>
+        </el-form-item>
         <el-form-item label="性別 : ">
           <el-radio-group v-model="ruleForm.sex" >
             <el-radio value="M">男</el-radio>
@@ -69,6 +75,7 @@ interface RuleForm {
   birthday: string,
   sex: string,
   country: string,
+  email: string,
 }
 
 let codeDtlOptions = ref([]);
@@ -83,6 +90,7 @@ const ruleForm = reactive<RuleForm>({
   birthday: '',
   sex: "M",
   country: '',
+  email: '',
 });
 
 const checkPass = (rule: any,value: any, callback: any) => {
@@ -116,6 +124,10 @@ const rules = reactive<FormRules<typeof ruleForm>>({
   country:[
     { required:true, message: "請選擇國籍", trigger: "blur"}
   ],
+  email:[
+      { required:true, message: "請輸入email", trigger: "blur"},
+      { type: "email", message: "請輸入正確的email格式", trigger: "blur"}
+  ],
 })
 
 onMounted(async () => {
@@ -135,6 +147,7 @@ const register = async (formEl: FormInstance | undefined) => {
           birthday: ruleForm.birthday,
           sex: ruleForm.sex,
           country: ruleForm.country,
+          email: ruleForm.email,
         }
         const registerData = await serviceApi.post(uiRegisterUser,patMap)
         if(registerData.status === 200){
