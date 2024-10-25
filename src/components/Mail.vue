@@ -13,7 +13,6 @@ onMounted(async () => {
   const queryString = window.location.search;
   const urlParams = new URLSearchParams(queryString);
   const token = urlParams.get('token'); // 取得 token 參數
-  console.log(token, "token")
   const response = await serviceApi.get(`${uiCheckTokenDead}?token=${token}`);
   if (response.status === 200) {
     try {

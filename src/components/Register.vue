@@ -62,7 +62,7 @@
 import serviceApi from "../request/request.js";
 import { onMounted, ref, reactive } from "vue";
 import { useRouter } from "vue-router";
-import { uiGetAllUser, uiGetDtlCodeDesc, uiRegisterUser } from "../api/api.js";
+import { uiGetAllUserByAccount, uiGetAllUserByEmail, uiGetDtlCodeDesc, uiRegisterUser } from "../api/api.js";
 import { countryStr } from "./constant/constant.js";
 import showMessage from "./message/message.js";
 import type { FormInstance, FormRules } from "element-plus";
@@ -138,7 +138,7 @@ const register = async (formEl: FormInstance | undefined) => {
   if(!formEl) return
   await formEl.validate(async (valid, fields)=>{
     if(valid){
-      if(await getAllUser()){
+      if(await getAllUserByAccount() && await getAllUserByEmail()){
         let patMap = {
           account: ruleForm.account,
           password: ruleForm.password,
@@ -155,7 +155,7 @@ const register = async (formEl: FormInstance | undefined) => {
           goBack();
         }
       }else{
-        showMessage("該帳號已被使用!!!","warning")
+        showMessage("該帳號/email已被使用!!!","warning")
       }
     }
   })
@@ -164,9 +164,17 @@ const goBack = () => {
   router.push("/");
 };
 
-const getAllUser = async () => {
-  const userTotal = await serviceApi.get(`${uiGetAllUser}${ruleForm.account}`)
-  console.log(userTotal.data.length,'userTotal.data.length')
+const getAllUserByAccount = async () => {
+  const userTotal = await serviceApi.get(`${uiGetAllUserByAccount}${ruleForm.account}`)
+  if(userTotal.data.length>0){
+    return false;
+  }else{
+    return true;
+  }
+}
+
+const getAllUserByEmail = async () => {
+  const userTotal = await serviceApi.get(`${uiGetAllUserByEmail}${ruleForm.email}`)
   if(userTotal.data.length>0){
     return false;
   }else{

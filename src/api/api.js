@@ -16,8 +16,11 @@ export const uiGetDtlCodeDesc = "/springYao/codeDtl/uiGetDtlCodeDesc/";
 export const uiGetAllCodeDtlPageable = "/springYao/codeDtl/uiGetAllCodeDtlPageable";
 /**         CodeDtl API         **/
 
-//取得全部使用者
-export const uiGetAllUser = "/springYao/userBasic/uiGetAllUser/";
+//取得全部使用者(帳號)
+export const uiGetAllUserByAccount = "/springYao/userBasic/uiGetAllUserByAccount/";
+
+//取得全部使用者(郵箱)
+export const uiGetAllUserByEmail = "/springYao/userBasic/uiGetAllUserByEmail/";
 
 //註冊
 export const uiRegisterUser = "/springYao/userBasic/uiRegisterUser";

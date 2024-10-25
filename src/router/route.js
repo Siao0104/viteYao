@@ -41,6 +41,11 @@ const routes = [
         path: "/mail",
         component: () => import('../components/Mail.vue'),
     },
+
+    {
+        path: "/googleOauth",
+        component: () => import('../components/GoogleOauth2.vue'),
+    },
 ]
 
 const router = createRouter({
