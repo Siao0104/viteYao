@@ -108,7 +108,7 @@ const saveMstAndDtl = async (mstTable: any) => {
   <div class="app-container">
     <div class="ui-up-container">
       <div class="header">
-        <h1 class="md-title">UI版型-MD1</h1>
+        <h1 class="md-title">代碼維護-主檔</h1>
         <el-pagination
             v-model:current-page="mstCurrentPage"
             v-model:page-size="mstPageSize"
@@ -136,7 +136,7 @@ const saveMstAndDtl = async (mstTable: any) => {
     </div>
     <div class="ui-down-container">
       <div class="header">
-        <h1 class="md-title">Detail</h1>
+        <h1 class="md-title">代碼維護-明細</h1>
         <el-pagination
             v-model:current-page="dtlCurrentPage"
             v-model:page-size="dtlPageSize"
